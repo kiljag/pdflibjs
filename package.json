@@ -1,0 +1,37 @@
+{
+  "name": "pdflibjs",
+  "version": "1.0.0",
+  "description": "A TypeScript library for generating PDF documents using a block-based schema with flexbox layout",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "npm run test:tree",
+    "test:tree": "ts-node tests/tree/run-all.ts",
+    "test:tree:element": "ts-node tests/tree/element-operations.test.ts",
+    "test:tree:metadata": "ts-node tests/tree/metadata-operations.test.ts",
+    "test:tree:page": "ts-node tests/tree/page-operations.test.ts",
+    "test:tree:query": "ts-node tests/tree/query-operations.test.ts",
+    "test:tree:serialization": "ts-node tests/tree/serialization.test.ts"
+  },
+  "keywords": [
+    "pdf",
+    "generator",
+    "typescript",
+    "flexbox",
+    "layout",
+    "invoice"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "date-fns": "^3.0.0",
+    "pdf-lib": "^1.17.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.0"
+  }
+}
