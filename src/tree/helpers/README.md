@@ -24,7 +24,7 @@ const tree = createPDFTree();
 
 // Create with custom properties
 const customTree = createPDFTree({
-  pages: [{ size: 'Letter', margins: '24pt' }],
+  pages: [{ width: 612, height: 792, unit: 'pt' }],
   elements: [],
   metadata: { title: 'My Document' }
 });

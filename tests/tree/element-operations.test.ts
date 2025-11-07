@@ -6,6 +6,7 @@
 import * as Tree from '../../src/tree';
 import { createTextBlock } from '../../src/blocks/ops/textBlockOps';
 import { TextBlock } from '../../src/blocks/models/TextBlock';
+import type { BlockLayout } from '../../src/blocks/models/Block';
 
 // Helper function for assertions
 function assert(condition: boolean, message: string) {
@@ -21,6 +22,16 @@ function assertEqual<T>(actual: T, expected: T, message: string) {
 }
 
 console.log('='.repeat(60));
+
+function defaultLayout(overrides: Partial<BlockLayout> = {}): BlockLayout {
+  return {
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 24,
+    ...overrides,
+  };
+}
 console.log('TEST: Element Operations');
 console.log('='.repeat(60));
 
@@ -30,9 +41,9 @@ let tree = Tree.createPDFTree({
   metadata: { title: 'Element Operations Test' }
 });
 
-const text1 = createTextBlock({ text: 'First element', style: { fontSize: 12 } });
-const text2 = createTextBlock({ text: 'Second element', style: { fontSize: 14 } });
-const text3 = createTextBlock({ text: 'Third element', style: { fontSize: 16 } });
+const text1 = createTextBlock({ text: 'First element', layout: defaultLayout(), style: { fontSize: 12 } });
+const text2 = createTextBlock({ text: 'Second element', layout: defaultLayout(), style: { fontSize: 14 } });
+const text3 = createTextBlock({ text: 'Third element', layout: defaultLayout(), style: { fontSize: 16 } });
 
 tree = Tree.addElement(tree, text1);
 assertEqual(tree.elements.length, 1, 'Should have 1 element after addElement');
@@ -44,7 +55,7 @@ console.log('✓ addElement and addElements work correctly');
 
 // Test 2: addElementAt
 console.log('\n[Test 2] addElementAt');
-const text0 = createTextBlock({ text: 'Zeroth element', style: { fontSize: 10 } });
+const text0 = createTextBlock({ text: 'Zeroth element', layout: defaultLayout(), style: { fontSize: 10 } });
 tree = Tree.addElementAt(tree, text0, 0);
 
 assertEqual(tree.elements.length, 4, 'Should have 4 elements after addElementAt');
@@ -63,7 +74,7 @@ tree = Tree.removeElement(tree, text1);
 assertEqual(tree.elements.length, 2, 'Should have 2 elements after removeElement');
 
 // Add an element with ID
-const textWithId = createTextBlock({ id: 'test-123', text: 'Element with ID', style: { fontSize: 12 } });
+const textWithId = createTextBlock({ id: 'test-123', text: 'Element with ID', layout: defaultLayout(), style: { fontSize: 12 } });
 tree = Tree.addElement(tree, textWithId);
 assertEqual(tree.elements.length, 3, 'Should have 3 elements after adding element with ID');
 
@@ -82,17 +93,17 @@ console.log('✓ clearElements works correctly');
 // Test 5: updateElementAt and updateElementById
 console.log('\n[Test 5] updateElementAt and updateElementById');
 tree = Tree.addElements(tree, [
-  createTextBlock({ id: 'elem-1', text: 'Element 1', style: { fontSize: 12 } }),
-  createTextBlock({ id: 'elem-2', text: 'Element 2', style: { fontSize: 14 } }),
-  createTextBlock({ id: 'elem-3', text: 'Element 3', style: { fontSize: 16 } }),
+  createTextBlock({ id: 'elem-1', text: 'Element 1', layout: defaultLayout(), style: { fontSize: 12 } }),
+  createTextBlock({ id: 'elem-2', text: 'Element 2', layout: defaultLayout(), style: { fontSize: 14 } }),
+  createTextBlock({ id: 'elem-3', text: 'Element 3', layout: defaultLayout(), style: { fontSize: 16 } }),
 ]);
 
-const updatedText = createTextBlock({ text: 'Updated Element', style: { fontSize: 20 } });
+const updatedText = createTextBlock({ text: 'Updated Element', layout: defaultLayout(), style: { fontSize: 20 } });
 tree = Tree.updateElementAt(tree, 1, updatedText);
 assertEqual((tree.elements[1] as TextBlock).text, 'Updated Element', 'Element at index 1 should be updated');
 assertEqual((tree.elements[1] as TextBlock).style?.fontSize, 20, 'Font size should be 20');
 
-const updatedById = createTextBlock({ id: 'elem-3', text: 'Updated by ID', style: { fontSize: 18 } });
+const updatedById = createTextBlock({ id: 'elem-3', text: 'Updated by ID', layout: defaultLayout(), style: { fontSize: 18 } });
 tree = Tree.updateElementById(tree, 'elem-3', updatedById);
 assertEqual((tree.elements[2] as TextBlock).text, 'Updated by ID', 'Element with ID elem-3 should be updated');
 

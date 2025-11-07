@@ -37,12 +37,6 @@ export function parseLength(value: Length | undefined, defaultValue: number = 0)
   }
 }
 
-function parseCoordinate(value: Length | number | undefined, defaultValue = 0): number | undefined {
-  if (value === undefined || value === null) return undefined;
-  if (typeof value === 'number') return value;
-  return parseLength(value, defaultValue);
-}
-
 /**
  * Parses a spacing value (margin/padding) and returns [top, right, bottom, left]
  * @param value - Spacing string like "4pt", "4pt 8pt", "4pt 8pt 4pt 8pt"
@@ -145,8 +139,6 @@ export function resolveStyles(block: Block): ComputedStyle {
   const border = parseBorder(style.border);
 
   return {
-    width: parseLength(style.width, -1), // -1 means auto
-    height: parseLength(style.height, -1),
     marginTop,
     marginRight,
     marginBottom,
@@ -159,28 +151,5 @@ export function resolveStyles(block: Block): ComputedStyle {
     borderRight: border,
     borderBottom: border,
     borderLeft: border,
-    positionX: parseCoordinate(style.x),
-    positionY: parseCoordinate(style.y),
   };
-}
-
-/**
- * Resolves page size to [width, height] in points
- * @param size - Page size specification
- * @returns [width, height] in points
- */
-export function resolvePageSize(
-  size: "A4" | "Letter" | "Legal" | [number, number]
-): [number, number] {
-  if (Array.isArray(size)) {
-    return size;
-  }
-
-  const sizes: Record<string, [number, number]> = {
-    A4: [595.28, 841.89],      // 210 × 297 mm
-    Letter: [612, 792],         // 8.5 × 11 inches
-    Legal: [612, 1008],         // 8.5 × 14 inches
-  };
-
-  return sizes[size] || sizes.A4;
 }

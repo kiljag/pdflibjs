@@ -48,7 +48,7 @@ npm install
 import { Tree, TextBlock, generatePDFFile } from 'pdflibjs';
 
 let tree = Tree.createPDFTree({
-  pages: [{ size: 'A4', margins: '36pt' }],
+  pages: [{ width: 595.28, height: 841.89, unit: 'pt' }],
   metadata: {
     title: 'My Document',
     author: 'Your Name',
@@ -168,7 +168,7 @@ const table = new TableBlock({
 import { Tree, TextBlock, generatePDFFromJSON, generatePDFFromObject } from 'pdflibjs';
 
 let tree = Tree.createPDFTree({
-  pages: [{ size: 'A4', margins: '36pt' }],
+  pages: [{ width: 595.28, height: 841.89, unit: 'pt' }],
   metadata: {
     title: 'My Document',
     author: 'Your Name',

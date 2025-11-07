@@ -79,8 +79,8 @@ All generated PDFs are saved to the `files/` directory in the project root.
 ### Layout & Positioning
 - Coordinates use **top-left as origin** (0,0 = top-left corner)
 - Set absolute positions using `x` and `y` in the style
-- Use `padding` and `margin` for spacing control
-- Page margins are configured in `Tree.addPage()`
+- Use `padding` for inner spacing and `margin` to separate blocks
+- Configure page dimensions via `Tree.addPage()`
 
 ### Colors
 - Use hex colors: `'#1a365d'`, `'#666666'`

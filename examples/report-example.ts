@@ -5,7 +5,16 @@
 
 import * as Tree from '../src/tree';
 import { createTextBlock } from '../src/blocks/ops/textBlockOps';
+import type { BlockLayout } from '../src/blocks/models/Block';
 import { generatePDFFile } from '../src/pdf/generator';
+
+const defaultLayout = (overrides: Partial<BlockLayout> = {}): BlockLayout => ({
+  x: 0,
+  y: 0,
+  width: 520,
+  height: 24,
+  ...overrides,
+});
 
 async function createReport() {
   console.log('Creating business report...');
@@ -20,56 +29,57 @@ async function createReport() {
   tree = Tree.setCreator(tree, 'PDFLibJS Example');
   tree = Tree.setKeywords(tree, ['report', 'quarterly', 'business', 'performance', 'Q3']);
 
-  // Configure page with margins
+  // Configure an additional page (optional customization)
   tree = Tree.addPage(tree, {
-    size: 'A4',
-    margins: '50pt'
+    width: 595.28,
+    height: 841.89,
+    unit: 'pt'
   });
 
   // Report Header
   tree = Tree.addElement(tree, createTextBlock({
     id: 'report-type',
     text: 'QUARTERLY BUSINESS REPORT',
+    layout: defaultLayout({ y: 0, height: 28 }),
     style: {
       fontSize: 11,
       color: '#666666',
-      textAlign: 'center',
-      y: 0
+      textAlign: 'center'
     }
   }));
 
   tree = Tree.addElement(tree, createTextBlock({
     id: 'report-title',
     text: 'Q3 2025 Performance Analysis',
+    layout: defaultLayout({ y: 18, height: 48 }),
     style: {
       fontSize: 26,
       fontWeight: 'bold',
       color: '#0a3d62',
-      textAlign: 'center',
-      y: 18
+      textAlign: 'center'
     }
   }));
 
   tree = Tree.addElement(tree, createTextBlock({
     id: 'company-name',
     text: 'GLOBAL TECH INDUSTRIES',
+    layout: defaultLayout({ y: 50, height: 28 }),
     style: {
       fontSize: 13,
       fontWeight: 'bold',
       color: '#1e3a8a',
-      textAlign: 'center',
-      y: 50
+      textAlign: 'center'
     }
   }));
 
   tree = Tree.addElement(tree, createTextBlock({
     id: 'report-date',
     text: 'Report Date: October 15, 2025',
+    layout: defaultLayout({ y: 68, height: 20 }),
     style: {
       fontSize: 9,
       color: '#666666',
-      textAlign: 'center',
-      y: 68
+      textAlign: 'center'
     }
   }));
 
@@ -77,11 +87,11 @@ async function createReport() {
   tree = Tree.addElement(tree, createTextBlock({
     id: 'separator-1',
     text: '='.repeat(85),
+    layout: defaultLayout({ y: 88, height: 18 }),
     style: {
       fontSize: 10,
       color: '#cbd5e0',
-      textAlign: 'center',
-      y: 88
+      textAlign: 'center'
     }
   }));
 
@@ -89,11 +99,11 @@ async function createReport() {
   tree = Tree.addElement(tree, createTextBlock({
     id: 'exec-summary-title',
     text: '# EXECUTIVE SUMMARY',
+    layout: defaultLayout({ y: 110, height: 28 }),
     style: {
       fontSize: 14,
       fontWeight: 'bold',
-      color: '#0a3d62',
-      y: 110
+      color: '#0a3d62'
     }
   }));
 
@@ -104,9 +114,9 @@ async function createReport() {
           'Customer satisfaction scores reached an all-time high of 94%, while operational\n' +
           'efficiency improved by 18%. The company maintains a solid financial position with\n' +
           'healthy cash reserves and continued investment in innovation.',
+    layout: defaultLayout({ y: 132, height: 120 }),
     style: {
       fontSize: 10,
-      y: 132,
       lineHeight: 1.6,
       color: '#1f2937'
     }
@@ -116,11 +126,11 @@ async function createReport() {
   tree = Tree.addElement(tree, createTextBlock({
     id: 'highlights-title',
     text: '# KEY HIGHLIGHTS',
+    layout: defaultLayout({ y: 220, height: 28 }),
     style: {
       fontSize: 14,
       fontWeight: 'bold',
-      color: '#0a3d62',
-      y: 220
+      color: '#0a3d62'
     }
   }));
 
@@ -132,10 +142,10 @@ async function createReport() {
           '+ Product Launch Success:   3 major releases, 95% adoption rate\n' +
           '+ Employee Satisfaction:    87% positive rating (+5%)\n' +
           '+ Market Share:             Expanded to 15.7% in core segment',
+    layout: defaultLayout({ y: 242, height: 130 }),
     style: {
       fontSize: 10,
       fontFamily: 'Courier',
-      y: 242,
       lineHeight: 1.7,
       color: '#1f2937'
     }
@@ -145,23 +155,23 @@ async function createReport() {
   tree = Tree.addElement(tree, createTextBlock({
     id: 'financial-title',
     text: '# FINANCIAL PERFORMANCE',
+    layout: defaultLayout({ y: 360, height: 28 }),
     style: {
       fontSize: 14,
       fontWeight: 'bold',
-      color: '#0a3d62',
-      y: 360
+      color: '#0a3d62'
     }
   }));
 
   tree = Tree.addElement(tree, createTextBlock({
     id: 'financial-table-header',
     text: 'METRIC                          Q3 2025        Q3 2024        CHANGE',
+    layout: defaultLayout({ y: 382, height: 28 }),
     style: {
       fontSize: 9,
       fontWeight: 'bold',
       fontFamily: 'Courier',
       backgroundColor: '#e5e7eb',
-      y: 382,
       padding: '6pt'
     }
   }));
@@ -180,10 +190,10 @@ async function createReport() {
     tree = Tree.addElement(tree, createTextBlock({
       id: `financial-row-${index}`,
       text: line,
+      layout: defaultLayout({ y: currentY, height: 20 }),
       style: {
         fontSize: 9,
         fontFamily: 'Courier',
-        y: currentY,
         color: '#374151'
       }
     }));
@@ -194,11 +204,11 @@ async function createReport() {
   tree = Tree.addElement(tree, createTextBlock({
     id: 'market-title',
     text: '# MARKET ANALYSIS',
+    layout: defaultLayout({ y: currentY + 20, height: 28 }),
     style: {
       fontSize: 14,
       fontWeight: 'bold',
-      color: '#0a3d62',
-      y: currentY + 20
+      color: '#0a3d62'
     }
   }));
 
@@ -212,9 +222,9 @@ async function createReport() {
           '\n' +
           'Customer Segments: Enterprise customers now represent 68% of revenue (up from 62%),\n' +
           'with SMB segment showing promising 41% growth rate.',
+    layout: defaultLayout({ y: currentY + 42, height: 150 }),
     style: {
       fontSize: 10,
-      y: currentY + 42,
       lineHeight: 1.6,
       color: '#1f2937'
     }
@@ -225,11 +235,11 @@ async function createReport() {
   tree = Tree.addElement(tree, createTextBlock({
     id: 'operations-title',
     text: '# OPERATIONAL METRICS',
+    layout: defaultLayout({ y: currentY, height: 28 }),
     style: {
       fontSize: 14,
       fontWeight: 'bold',
-      color: '#0a3d62',
-      y: currentY
+      color: '#0a3d62'
     }
   }));
 
@@ -240,10 +250,10 @@ async function createReport() {
           'Product Uptime:               99.97% (+0.12%)\n' +
           'Employee Productivity:        +18% through automation initiatives\n' +
           'Cost per Acquisition:         $847 (-12% from Q2)',
+    layout: defaultLayout({ y: currentY + 22, height: 110 }),
     style: {
       fontSize: 10,
       fontFamily: 'Courier',
-      y: currentY + 22,
       lineHeight: 1.7,
       color: '#1f2937'
     }
@@ -254,11 +264,11 @@ async function createReport() {
   tree = Tree.addElement(tree, createTextBlock({
     id: 'strategic-title',
     text: '# STRATEGIC INITIATIVES',
+    layout: defaultLayout({ y: currentY, height: 28 }),
     style: {
       fontSize: 14,
       fontWeight: 'bold',
-      color: '#0a3d62',
-      y: currentY
+      color: '#0a3d62'
     }
   }));
 
@@ -272,9 +282,9 @@ async function createReport() {
           '\n' +
           '3. Partnership Program: Launched strategic partnerships with 5 industry leaders,\n' +
           '   expanding distribution channels and market reach.',
+    layout: defaultLayout({ y: currentY + 22, height: 150 }),
     style: {
       fontSize: 10,
-      y: currentY + 22,
       lineHeight: 1.6,
       color: '#1f2937'
     }
@@ -285,11 +295,11 @@ async function createReport() {
   tree = Tree.addElement(tree, createTextBlock({
     id: 'outlook-title',
     text: '# Q4 2025 OUTLOOK',
+    layout: defaultLayout({ y: currentY, height: 28 }),
     style: {
       fontSize: 14,
       fontWeight: 'bold',
-      color: '#0a3d62',
-      y: currentY
+      color: '#0a3d62'
     }
   }));
 
@@ -300,9 +310,9 @@ async function createReport() {
           'expanding our AI capabilities, and preparing for the FY2026 product roadmap. We remain\n' +
           'committed to sustainable growth while maintaining operational excellence and customer\n' +
           'satisfaction.',
+    layout: defaultLayout({ y: currentY + 22, height: 120 }),
     style: {
       fontSize: 10,
-      y: currentY + 22,
       lineHeight: 1.6,
       color: '#1f2937'
     }
@@ -313,21 +323,21 @@ async function createReport() {
   tree = Tree.addElement(tree, createTextBlock({
     id: 'separator-2',
     text: '='.repeat(85),
+    layout: defaultLayout({ y: currentY, height: 18 }),
     style: {
       fontSize: 10,
       color: '#cbd5e0',
-      textAlign: 'center',
-      y: currentY
+      textAlign: 'center'
     }
   }));
 
   tree = Tree.addElement(tree, createTextBlock({
     id: 'approval',
     text: 'Report Prepared by: Finance Department | Approved by: John Smith, CEO',
+    layout: defaultLayout({ y: currentY + 18, height: 22 }),
     style: {
       fontSize: 8,
       textAlign: 'center',
-      y: currentY + 18,
       color: '#6b7280'
     }
   }));
@@ -335,11 +345,11 @@ async function createReport() {
   tree = Tree.addElement(tree, createTextBlock({
     id: 'confidential',
     text: 'CONFIDENTIAL - FOR INTERNAL USE ONLY',
+    layout: defaultLayout({ y: currentY + 32, height: 20 }),
     style: {
       fontSize: 8,
       fontWeight: 'bold',
       textAlign: 'center',
-      y: currentY + 32,
       color: '#991b1b'
     }
   }));
