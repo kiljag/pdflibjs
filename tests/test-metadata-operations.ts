@@ -97,14 +97,14 @@ console.log('\n[Test 2.6] addPage, addPageAt');
 tree = Tree.createPDFTree(); // Reset
 assertEqual(tree.pages.length, 1, 'Should have 1 default page');
 
-tree = Tree.addPage(tree, { size: 'Letter', margins: '48pt' });
+tree = Tree.addPage(tree, { width: 612, height: 792, unit: 'pt' });
 assertEqual(tree.pages.length, 2, 'Should have 2 pages after addPage');
-assertEqual(tree.pages[1].size, 'Letter', 'Second page should be Letter size');
+assertEqual(tree.pages[1].width, 612, 'Second page should have Letter width');
 
-tree = Tree.addPageAt(tree, { size: 'Legal', margins: '24pt' }, 1);
+tree = Tree.addPageAt(tree, { width: 612, height: 1008, unit: 'pt' }, 1);
 assertEqual(tree.pages.length, 3, 'Should have 3 pages after addPageAt');
-assertEqual(tree.pages[1].size, 'Legal', 'Page at index 1 should be Legal');
-assertEqual(tree.pages[2].size, 'Letter', 'Page at index 2 should be Letter');
+assertEqual(tree.pages[1].height, 1008, 'Page at index 1 should be Legal height');
+assertEqual(tree.pages[2].width, 612, 'Page at index 2 should match Letter width');
 
 console.log('✓ addPage, addPageAt work correctly');
 
@@ -112,35 +112,34 @@ console.log('✓ addPage, addPageAt work correctly');
 console.log('\n[Test 2.7] removePageAt');
 tree = Tree.removePageAt(tree, 1);
 assertEqual(tree.pages.length, 2, 'Should have 2 pages after removePageAt');
-assertEqual(tree.pages[1].size, 'Letter', 'Second page should be Letter');
+assertEqual(tree.pages[1].width, 612, 'Second page should retain Letter width');
 
 console.log('✓ removePageAt works correctly');
 
 // Test 8: updatePageAt, updatePageAtWith
 console.log('\n[Test 2.8] updatePageAt, updatePageAtWith');
-tree = Tree.updatePageAt(tree, 0, { size: 'Legal', margins: '12pt' });
-assertEqual(tree.pages[0].size, 'Legal', 'First page should be updated to Legal');
-assertEqual(tree.pages[0].margins, '12pt', 'Margins should be 12pt');
+tree = Tree.updatePageAt(tree, 0, { width: 612, height: 1008, unit: 'pt' });
+assertEqual(tree.pages[0].height, 1008, 'First page should be updated to Legal height');
 
 tree = Tree.updatePageAtWith(tree, 1, (page: PageConfig) => ({
   ...page,
-  margins: '36pt 48pt',
+  width: page.width + 20,
 }));
-assertEqual(tree.pages[1].margins, '36pt 48pt', 'Second page margins should be updated');
+assertEqual(tree.pages[1].width, 632, 'Second page width should be updated');
 
 console.log('✓ updatePageAt, updatePageAtWith work correctly');
 
 // Test 9: setPages, getPageCount, getPageAt
 console.log('\n[Test 2.9] setPages, getPageCount, getPageAt');
 tree = Tree.setPages(tree, [
-  { size: 'A4', margins: '36pt' },
-  { size: 'A4', margins: '36pt' },
-  { size: 'A4', margins: '36pt' },
+  { width: 595.28, height: 841.89, unit: 'pt' },
+  { width: 595.28, height: 841.89, unit: 'pt' },
+  { width: 595.28, height: 841.89, unit: 'pt' },
 ]);
 assertEqual(Tree.getPageCount(tree), 3, 'Should have 3 pages');
 
 const page = Tree.getPageAt(tree, 1);
-assertEqual(page?.size, 'A4', 'Page at index 1 should be A4');
+assertEqual(page?.width, 595.28, 'Page at index 1 should use default width');
 
 console.log('✓ setPages, getPageCount, getPageAt work correctly');
 

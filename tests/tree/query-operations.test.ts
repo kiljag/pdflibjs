@@ -6,6 +6,7 @@
 import * as Tree from '../../src/tree';
 import { createTextBlock } from '../../src/blocks/ops/textBlockOps';
 import { TextBlock } from '../../src/blocks/models/TextBlock';
+import type { BlockLayout } from '../../src/blocks/models/Block';
 
 // Helper function for assertions
 function assert(condition: boolean, message: string) {
@@ -21,16 +22,26 @@ function assertEqual<T>(actual: T, expected: T, message: string) {
 }
 
 console.log('='.repeat(60));
+
+function defaultLayout(overrides: Partial<BlockLayout> = {}): BlockLayout {
+  return {
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 24,
+    ...overrides,
+  };
+}
 console.log('TEST: Query Operations');
 console.log('='.repeat(60));
 
 // Setup test tree
 let tree = Tree.createPDFTree();
 
-const elem1 = createTextBlock({ id: 'text-1', text: 'First text' });
-const elem2 = createTextBlock({ id: 'text-alt', text: 'Alternative text' });
-const elem3 = createTextBlock({ id: 'text-2', text: 'Second text' });
-const elem4 = createTextBlock({ text: 'No ID text' });
+const elem1 = createTextBlock({ id: 'text-1', text: 'First text', layout: defaultLayout() });
+const elem2 = createTextBlock({ id: 'text-alt', text: 'Alternative text', layout: defaultLayout() });
+const elem3 = createTextBlock({ id: 'text-2', text: 'Second text', layout: defaultLayout() });
+const elem4 = createTextBlock({ text: 'No ID text', layout: defaultLayout() });
 
 tree = Tree.addElements(tree, [elem1, elem2, elem3, elem4]);
 

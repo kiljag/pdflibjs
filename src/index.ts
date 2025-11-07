@@ -29,6 +29,8 @@ export {
   BlockStyle,
   Length,
   Color,
+  BlockLayout,
+  normalizeBlockLayout,
 } from './blocks/models/Block';
 
 export {

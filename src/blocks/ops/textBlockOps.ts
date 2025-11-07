@@ -1,8 +1,11 @@
+import { normalizeBlockLayout } from '../models/Block';
 import { TextBlock, TextBlockStyle } from '../models/TextBlock';
+import type { BlockLayout } from '../models/Block';
 
 export interface CreateTextBlockOptions {
   text: string;
   id?: string;
+  layout: BlockLayout;
   style?: TextBlockStyle;
   overflow?: 'clip' | 'ellipsis' | 'shrinkToFit' | 'expand';
 }
@@ -15,6 +18,7 @@ export function createTextBlock(options: CreateTextBlockOptions): TextBlock {
     type: 'text',
     text: options.text,
     id: options.id,
+    layout: normalizeBlockLayout(options.layout),
     style: options.style,
     overflow: options.overflow ?? 'expand',
   };
@@ -27,6 +31,7 @@ export function serializeTextBlock(block: TextBlock): any {
   return {
     type: 'text',
     text: block.text,
+    layout: block.layout,
     overflow: block.overflow,
     style: block.style,
     ...(block.id && { id: block.id }),
@@ -41,6 +46,7 @@ export function deserializeTextBlock(json: any): TextBlock {
     type: 'text',
     text: json.text,
     id: json.id,
+    layout: normalizeBlockLayout(json.layout),
     style: json.style,
     overflow: json.overflow ?? 'expand',
   };

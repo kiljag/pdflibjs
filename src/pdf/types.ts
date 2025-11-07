@@ -30,8 +30,6 @@ export interface BorderStyle {
  * Computed styles with every value resolved to points.
  */
 export interface ComputedStyle {
-  width: number;
-  height: number;
   marginTop: number;
   marginRight: number;
   marginBottom: number;
@@ -44,8 +42,6 @@ export interface ComputedStyle {
   borderRight?: BorderStyle;
   borderBottom?: BorderStyle;
   borderLeft?: BorderStyle;
-  positionX?: number;
-  positionY?: number;
 }
 
 /**

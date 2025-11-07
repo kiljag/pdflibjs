@@ -5,6 +5,7 @@
 
 import * as Tree from '../../src/tree';
 import { createTextBlock } from '../../src/blocks/ops/textBlockOps';
+import type { BlockLayout } from '../../src/blocks/models/Block';
 
 // Helper function for assertions
 function assert(condition: boolean, message: string) {
@@ -20,6 +21,16 @@ function assertEqual<T>(actual: T, expected: T, message: string) {
 }
 
 console.log('='.repeat(60));
+
+function defaultLayout(overrides: Partial<BlockLayout> = {}): BlockLayout {
+  return {
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 24,
+    ...overrides,
+  };
+}
 console.log('TEST: PDFTree Serialization');
 console.log('='.repeat(60));
 
@@ -31,9 +42,9 @@ tree = Tree.setTitle(tree, 'Test Document');
 tree = Tree.setAuthor(tree, 'Test Author');
 
 tree = Tree.addElements(tree, [
-  createTextBlock({ id: 'text-1', text: 'Hello World' }),
-  createTextBlock({ id: 'text-2', text: 'Second text' }),
-  createTextBlock({ id: 'text-3', text: 'Third text' })
+  createTextBlock({ id: 'text-1', text: 'Hello World', layout: defaultLayout() }),
+  createTextBlock({ id: 'text-2', text: 'Second text', layout: defaultLayout() }),
+  createTextBlock({ id: 'text-3', text: 'Third text', layout: defaultLayout() })
 ]);
 
 const json = Tree.serializePDFTree(tree);
@@ -88,22 +99,25 @@ complexTree = Tree.setMetadata(complexTree, {
   creator: 'PDFLibJS'
 });
 
-complexTree = Tree.addPage(complexTree, { size: 'Letter', margins: '24pt' });
+complexTree = Tree.addPage(complexTree, { width: 612, height: 792, unit: 'pt' });
 
 complexTree = Tree.addElements(complexTree, [
   createTextBlock({
     id: 'title',
     text: 'Title Text',
+    layout: defaultLayout({ width: 400, height: 40 }),
     style: { fontSize: 24, fontWeight: 'bold', textAlign: 'center' }
   }),
   createTextBlock({
     id: 'subtitle',
     text: 'Subtitle Text',
+    layout: defaultLayout({ width: 400, height: 32 }),
     style: { fontSize: 16 }
   }),
   createTextBlock({
     id: 'body',
     text: 'Body text content',
+    layout: defaultLayout({ width: 400, height: 200 }),
     style: { fontSize: 12 }
   })
 ]);
@@ -112,7 +126,8 @@ const complexJson = Tree.serializePDFTree(complexTree);
 const restoredComplex = Tree.deserializePDFTree(complexJson);
 
 assertEqual(restoredComplex.pages.length, 2, 'Should have 2 pages');
-assertEqual(restoredComplex.pages[1].size, 'Letter', 'Second page should be Letter');
+assertEqual(restoredComplex.pages[1].width, 612, 'Second page should have Letter width');
+assertEqual(restoredComplex.pages[1].height, 792, 'Second page should have Letter height');
 assertEqual(restoredComplex.elements.length, 3, 'Should have 3 elements');
 assertEqual(restoredComplex.metadata.keywords?.length, 3, 'Should have 3 keywords');
 

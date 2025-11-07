@@ -124,7 +124,7 @@ console.log('✓ setKeywords is immutable');
 // Test 7: Page operations don't mutate original
 console.log('\n[Test 3.7] Page operations immutability');
 const original7 = Tree.createPDFTree();
-const modified7 = Tree.addPage(original7, { size: 'Letter', margins: '48pt' });
+const modified7 = Tree.addPage(original7, { width: 612, height: 792, unit: 'pt' });
 
 assertEqual(original7.pages.length, 1, 'Original should still have 1 page');
 assertEqual(modified7.pages.length, 2, 'Modified should have 2 pages');

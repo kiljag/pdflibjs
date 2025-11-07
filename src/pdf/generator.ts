@@ -4,11 +4,34 @@
  */
 
 import { PDFDocument } from 'pdf-lib';
-import { PDFTree } from '../tree/models/PDFTree';
+import { PDFTree, PageConfig, DEFAULT_PAGE_CONFIG, PageUnit } from '../tree/models/PDFTree';
 import { pdfTreeFromString, deserializePDFTree } from '../tree/helpers/treeSerializer';
 import { computeLayout } from './layoutEngine';
 import { renderPage, RendererContext } from './renderer';
-import { resolvePageSize, parseSpacing } from './styleResolver';
+
+function convertToPoints(value: number, unit: PageUnit = 'pt'): number {
+  switch (unit) {
+    case 'pt':
+      return value;
+    case 'in':
+      return value * 72;
+    case 'mm':
+      return value * 72 / 25.4;
+    case 'cm':
+      return value * 72 / 2.54;
+    default:
+      return value;
+  }
+}
+
+function resolvePageDimensions(page: PageConfig | undefined): [number, number] {
+  const config = page ?? DEFAULT_PAGE_CONFIG;
+  const unit = config.unit ?? DEFAULT_PAGE_CONFIG.unit ?? 'pt';
+  return [
+    convertToPoints(config.width ?? DEFAULT_PAGE_CONFIG.width, unit),
+    convertToPoints(config.height ?? DEFAULT_PAGE_CONFIG.height, unit),
+  ];
+}
 
 /**
  * Options for PDF generation
@@ -55,12 +78,9 @@ export async function generatePDF(options: GenerateOptions): Promise<Uint8Array>
   }
 
   // Get page configuration
-  const pageConfig = tree.pages[0] || { size: 'A4', margins: '36pt' };
-  const [pageWidth, pageHeight] = resolvePageSize(pageConfig.size);
-  const [marginTop, marginRight, marginBottom, marginLeft] = parseSpacing(pageConfig.margins);
-
-  // Calculate content area
-  const contentWidth = pageWidth - marginLeft - marginRight;
+  const pageConfig = tree.pages[0] || { ...DEFAULT_PAGE_CONFIG };
+  const [pageWidth, pageHeight] = resolvePageDimensions(pageConfig);
+  const contentWidth = pageWidth;
 
   const blocks = tree.elements;
   console.log(`[Generator] Processing ${blocks.length} blocks...`);
@@ -74,16 +94,9 @@ export async function generatePDF(options: GenerateOptions): Promise<Uint8Array>
   console.log('[Generator] Creating single page PDF...');
   const page = pdfDoc.addPage([pageWidth, pageHeight]);
 
-  // Adjust box positions for page margins (x and y are top-left coordinates)
-  const adjustedBoxes = boxes.map(box => ({
-    ...box,
-    x: box.x + marginLeft,
-    y: box.y + marginTop,
-  }));
-
   // Render boxes to page
-  console.log(`[Generator] Rendering ${adjustedBoxes.length} boxes...`);
-  await renderPage(page, adjustedBoxes, ctx);
+  console.log(`[Generator] Rendering ${boxes.length} boxes...`);
+  await renderPage(page, boxes, ctx);
   console.log('[Generator] Page rendered');
 
   // Save and return PDF bytes

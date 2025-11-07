@@ -6,17 +6,24 @@
 
 import { Block, TextBlock } from "../../blocks/models";
 
+export type PageUnit = 'pt' | 'mm' | 'cm' | 'in';
+export interface PageConfig {
+  width: number;
+  height: number;
+  unit?: PageUnit;
+  orientation?: "portrait" | "landscape";
+}
 
 export type AnyBlock = Block | TextBlock;
 
-/**
- * Page configuration for PDF pages
- */
-export interface PageConfig {
-  size: "A4" | "Letter" | "Legal" | [number, number];
-  margins: string;
-  orientation?: "portrait" | "landscape";
-}
+export const DEFAULT_PAGE_UNIT: PageUnit = 'pt';
+export const DEFAULT_PAGE_WIDTH = 595.28;  // A4 width in points
+export const DEFAULT_PAGE_HEIGHT = 841.89; // A4 height in points
+export const DEFAULT_PAGE_CONFIG: PageConfig = {
+  width: DEFAULT_PAGE_WIDTH,
+  height: DEFAULT_PAGE_HEIGHT,
+  unit: DEFAULT_PAGE_UNIT,
+};
 
 /**
  * Document metadata
